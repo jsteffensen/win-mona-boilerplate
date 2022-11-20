@@ -1,15 +1,23 @@
-const fs = require('fs');
+const fs = require('node:fs');
 
-const json = {};
+let btext = readFileSync('build.json');
+let bjson = readJsonSync('build.json');
 
-fs.readFile('build.json', (err, data) => {
-    if (err) throw err;
-    let build = JSON.parse(data);
-    console.log(build['build-step-complete']);
-});
+console.log(bjson['build-step-complete']);
 
 
-/* fs.appendFile('build.json', JSON.stringify(json, null, 4), function (err) {
-  if (err) throw err;
-  console.log('Saved!');
-});*/
+//*********************************************************************************
+
+function readFileSync(file) {
+	return fs.readFileSync(file,'utf8');
+}
+
+function readJsonSync(file) {
+	let contentString = fs.readFileSync(file,'utf8');
+	return JSON.parse(contentString);
+}
+
+
+
+
+
