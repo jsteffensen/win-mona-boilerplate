@@ -1,0 +1,9 @@
+{
+    "somekey": "somevalue",
+    "somekey2": 123,
+    "arr": [
+        {
+            "firstinarr": "foo"
+        }
+    ]
+}
