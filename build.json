@@ -1,10 +1,11 @@
 {
-    "build-step-complete": 0,
-    "somekey2": 123,
-    "arr": [
-        {
-            "firstinarr": "foo"
-        }
+    "project": "win-mona-ng",
+	"project-root": "C:\\Users\\root\\workspace\\win-mona-ng",
+	"build-step-complete": 0,
+    "file-inserts": [
+        {"firstinarr": "foo"}
     ],
-    "added-key": 12345
+	"set-json-file-values": [
+		{"file": "foo"}
+	]
 }

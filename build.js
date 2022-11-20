@@ -3,6 +3,7 @@ const https = require('https');
 let os = require('os');
 let path = require('path');
 
+
 /*
 
 USAGE 
@@ -16,7 +17,49 @@ downloadFileToRelativePath('https://raw.githubusercontent.com/jsteffensen/win-mo
 */
 
 
+//*********************************************************************************
+//                                LOAD
+//*********************************************************************************
 
+let buildObj = readJsonSync('build.json');
+let projectRoot = buildObj['project-root'];
+let angular_json = readJsonSync(projectRoot + '\\angular.json')
+
+
+//*********************************************************************************
+//                                SETTERS
+//*********************************************************************************
+
+setBuildOutputPath();
+addFormsModule();
+
+
+//*********************************************************************************
+//                                ANGULAR SPECIFIC
+//*********************************************************************************
+
+function setBuildOutputPath() {
+	
+	let project = buildObj['project'];
+	
+	
+	angular_json['projects'][project]['architect']['build']['options']['outputPath'] = 'public';
+	
+	writeJsonSync(projectRoot + '\\angular.json', angular_json);
+	
+	console.log('Set build output path.');
+}
+
+function addFormsModule() {
+	writeLineToFileAfterLineStartingWith(projectRoot + '\\src\\app\\app.module.ts', 'import { FormsModule } from \'@angular/forms\';', 'import { AppRoutingModule }');
+	writeLineToFileAfterLineStartingWith(projectRoot + '\\src\\app\\app.module.ts', '    FormsModule,', '    BrowserModule,');
+	
+	console.log('Add FormsModule.');
+}
+
+
+//*********************************************************************************
+//                                UTILS
 //*********************************************************************************
 
 function readFileSync(file) {
@@ -57,12 +100,19 @@ function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
 	
 	let originalFile  = readFileSync(file);
 	let lineArray = originalFile.split(os.EOL);
+	let hasFoundLine = false;
 	
 	for (let i=0; i<lineArray.length; i++) {
 	  if(lineArray[i].startsWith(lineStartsWith)) {
+		  hasFoundLine = true;
 		  lineArray.splice(i+1, 0, txt);
 		  break;
 	  }
+	}
+	
+	if(!hasFoundLine) {
+		console.log('Error: Never found line to insert after! Searched ' + lineArray.length + ' lines.');
+		return;
 	}
 	
 	let newFileText = '';
@@ -75,11 +125,15 @@ function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
 };
 
 function ensureDirectoryExistence(filePath) {
+	
   let dirname = path.dirname(filePath);
+  
   if (fs.existsSync(dirname)) {
     return true;
   }
+  
   ensureDirectoryExistence(dirname);
+  
   fs.mkdirSync(dirname);
 }
 
