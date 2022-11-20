@@ -7,7 +7,6 @@ function readJsonSync(file) {
 	return JSON.parse(contentString);
 }
 
-// here is inserted line at position 10
 function writeFileSync(file, txt) {
 	fs.writeFileSync(file, txt);
 }
@@ -31,4 +30,8 @@ function writeLineToFileSync(file, txt, lineNumber) {
 	
 	
 };
+
+
+
+
 

@@ -1,17 +1,21 @@
 const fs = require('node:fs');
+const https = require('https');
 let os = require('os');
+let path = require('path');
+
+/*
+
+USAGE 
+
+writeFileSync('test2.ts', 'some file text');
+writeJsonSync('build.json', {"foo": "bar"});
+writeLineToFileSync('test2.ts', '// here is inserted line at line number 10', 10);
+writeLineToFileAfterLineStartingWith('test2.ts', '// inserted line at text', 'function writeJsonSync');
+downloadFileToRelativePath('https://raw.githubusercontent.com/jsteffensen/win-mona-boilerplate/master/test2.ts', '\\somedir\\', 'downloaded.ts');
+
+*/
 
 
-/*let btext = readFileSync('test2.ts');
-let bjson = readJsonSync('build.json');
-
-bjson['added-key'] = 12345;
-
-btext += '';
-writeFileSync('test2.ts', btext);
-writeJsonSync('build.json', bjson);*/
-
-writeLineToFileSync('test2.ts', '// here is inserted line at position 10', 10)
 
 //*********************************************************************************
 
@@ -39,12 +43,61 @@ function writeLineToFileSync(file, txt, lineNumber) {
 	
 	lineArray.splice(lineNumber-1, 0, txt);
 	
-	let newFile = '';
+	let newFileText = '';
 	
 	for (let i=0; i<lineArray.length; i++) {
-	  newFile += lineArray[i] + os.EOL;
+	  newFileText += lineArray[i] + os.EOL;
 	}
 	
-	writeFileSync(file, newFile);
-	
+	writeFileSync(file, newFileText);
+
 };
+
+function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
+	
+	let originalFile  = readFileSync(file);
+	let lineArray = originalFile.split(os.EOL);
+	
+	for (let i=0; i<lineArray.length; i++) {
+	  if(lineArray[i].startsWith(lineStartsWith)) {
+		  lineArray.splice(i+1, 0, txt);
+		  break;
+	  }
+	}
+	
+	let newFileText = '';
+	
+	for (let k=0; k<lineArray.length; k++) {
+	  newFileText += lineArray[k] + os.EOL;
+	}
+	
+	writeFileSync(file, newFileText);
+};
+
+function ensureDirectoryExistence(filePath) {
+  let dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
+
+function downloadFileToRelativePath(downloadFile, relativeSavePath, saveAsFileName) {
+	
+	let currentDirectory = __dirname;
+	let saveFile = currentDirectory + relativeSavePath + saveAsFileName;
+	
+	ensureDirectoryExistence(saveFile);
+	
+	const file = fs.createWriteStream(saveFile);
+	
+	const request = https.get(downloadFile, function(response) {
+	   response.pipe(file);
+
+	   file.on('finish', () => {
+		   file.close();
+		   console.log('Download Completed');
+	   });
+	});
+}
