@@ -2,13 +2,14 @@ const fs = require('fs');
 
 const json = {};
 
-json.somekey = 'somevalue';
-json.somekey2 = 123;
-json.arr = [];
-json.arr.push( {'firstinarr': 'foo'} );
+fs.readFile('build.json', (err, data) => {
+    if (err) throw err;
+    let build = JSON.parse(data);
+    console.log(build['build-step-complete']);
+});
 
 
-fs.appendFile('build.json', JSON.stringify(json, null, 4), function (err) {
+/* fs.appendFile('build.json', JSON.stringify(json, null, 4), function (err) {
   if (err) throw err;
   console.log('Saved!');
-});
+});*/
