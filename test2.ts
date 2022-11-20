@@ -1,20 +1,3 @@
-const fs = require('node:fs');
-let os = require('os');
-
-
-/*let btext = readFileSync('test2.ts');
-let bjson = readJsonSync('build.json');
-
-bjson['added-key'] = 12345;
-
-btext += '';
-writeFileSync('test2.ts', btext);
-writeJsonSync('build.json', bjson);*/
-
-writeLineToFileSync('test2.ts', '// here is inserted line at position 10', 10)
-
-//*********************************************************************************
-
 function readFileSync(file) {
 	return fs.readFileSync(file,'utf8');
 }
@@ -24,6 +7,7 @@ function readJsonSync(file) {
 	return JSON.parse(contentString);
 }
 
+// here is inserted line at position 10
 function writeFileSync(file, txt) {
 	fs.writeFileSync(file, txt);
 }
@@ -37,7 +21,7 @@ function writeLineToFileSync(file, txt, lineNumber) {
 	let originalFile  = readFileSync(file);
 	let lineArray = originalFile.split(os.EOL);
 	
-	lineArray.splice(lineNumber-1, 0, txt);
+	lineArray.splice(lineNumber, 0, txt);
 	
 	let newFile = '';
 	
@@ -45,6 +29,6 @@ function writeLineToFileSync(file, txt, lineNumber) {
 	  newFile += lineArray[i] + os.EOL;
 	}
 	
-	writeFileSync(file, newFile);
 	
 };
+
