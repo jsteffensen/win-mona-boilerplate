@@ -51,7 +51,7 @@ function setBuildOutputPath() {
 
 function addOsEOLToFiles() {
 	
-		makeosEOL(projectRoot + '\\src\\app\\app.module.ts');
+		makeOsEOL(projectRoot + '\\src\\app\\app.module.ts');
 		
 		console.log('addOsEOLToFiles');
 }
@@ -104,6 +104,7 @@ function writeLineToFileSync(file, txt, lineNumber) {
 };
 
 function makeOsEOL(file) {
+	
 	let originalFile  = readFileSync(file);
 	originalFile = originalFile.trim();
 	originalFileArr = originalFile.split(/\r?\n/);
@@ -124,7 +125,6 @@ function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
 	let hasFoundLine = false;
 	
 	for (let i=0; i<lineArray.length; i++) {
-	  console.log('line --------->' + lineArray[i]);	
 	  if(lineArray[i].startsWith(lineStartsWith)) {
 		  hasFoundLine = true;
 		  lineArray.splice(i+1, 0, txt);
