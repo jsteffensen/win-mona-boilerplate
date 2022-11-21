@@ -31,6 +31,7 @@ let angular_json = readJsonSync(projectRoot + '\\angular.json')
 //*********************************************************************************
 
 setBuildOutputPath();
+addOsEOLToFiles();
 addFormsModule();
 
 
@@ -42,19 +43,25 @@ function setBuildOutputPath() {
 	
 	let project = buildObj['project'];
 	
-	
 	angular_json['projects'][project]['architect']['build']['options']['outputPath'] = 'public';
-	
 	writeJsonSync(projectRoot + '\\angular.json', angular_json);
 	
-	console.log('Set build output path.');
+	console.log('setBuildOutputPath');
+}
+
+function addOsEOLToFiles() {
+	
+		makeosEOL(projectRoot + '\\src\\app\\app.module.ts');
+		
+		console.log('addOsEOLToFiles');
 }
 
 function addFormsModule() {
+
 	writeLineToFileAfterLineStartingWith(projectRoot + '\\src\\app\\app.module.ts', 'import { FormsModule } from \'@angular/forms\';', 'import { AppRoutingModule }');
 	writeLineToFileAfterLineStartingWith(projectRoot + '\\src\\app\\app.module.ts', '    FormsModule,', '    BrowserModule,');
 	
-	console.log('Add FormsModule.');
+	console.log('addFormsModule');
 }
 
 
@@ -96,6 +103,20 @@ function writeLineToFileSync(file, txt, lineNumber) {
 
 };
 
+function makeOsEOL(file) {
+	let originalFile  = readFileSync(file);
+	originalFile = originalFile.trim();
+	originalFileArr = originalFile.split(/\r?\n/);
+	
+	let newFile  = '';
+	
+	for (let i=0; i<originalFileArr.length; i++) {
+		newFile += originalFileArr[i] + os.EOL;
+	}
+	
+	writeFileSync(file, newFile);
+}
+
 function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
 	
 	let originalFile  = readFileSync(file);
@@ -103,6 +124,7 @@ function writeLineToFileAfterLineStartingWith(file, txt, lineStartsWith) {
 	let hasFoundLine = false;
 	
 	for (let i=0; i<lineArray.length; i++) {
+	  console.log('line --------->' + lineArray[i]);	
 	  if(lineArray[i].startsWith(lineStartsWith)) {
 		  hasFoundLine = true;
 		  lineArray.splice(i+1, 0, txt);
