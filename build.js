@@ -52,6 +52,7 @@ function setBuildOutputPath() {
 function addOsEOLToFiles() {
 	
 		makeOsEOL(projectRoot + '\\src\\app\\app.module.ts');
+		makeOsEOL(projectRoot + '\\src\\app\\app-routing.module.ts');
 		
 		console.log('addOsEOLToFiles');
 }
